@@ -75,7 +75,7 @@ For everyday wear and nail health, I'd suggest gel. For durability and length, a
 
 ### API Configuration
 - **Provider**: Groq (https://groq.com)
-- **Model**: llama3-70b-8192 (enhanced reasoning)
+- **Model**: llama-3.3-70b-versatile (latest Llama 70B)
 - **Temperature**: 0.7 (balanced creativity)
 - **Max Tokens**: 500 (detailed responses)
 
@@ -107,11 +107,11 @@ You can customize the chatbot by editing `app/blueprints/chatbot.py`:
 
 ### Change AI Model
 ```python
-model="llama3-70b-8192"  # Current (best quality)
+model="llama-3.3-70b-versatile"  # Current (best quality, 70B parameters)
 # OR
-model="llama3-8b-8192"   # Faster, good for simple queries
+model="llama-3.1-8b-instant"     # Faster, good for simple queries
 # OR
-model="mixtral-8x7b-32768"  # Balanced option
+model="openai/gpt-oss-120b"      # Alternative high-quality option
 ```
 
 ### Adjust Response Style

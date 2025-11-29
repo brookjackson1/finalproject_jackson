@@ -89,7 +89,7 @@ def ask():
                     "content": user_message
                 }
             ],
-            model="llama3-70b-8192",  # Using the enhanced reasoning model
+            model="llama-3.3-70b-versatile",  # Latest Llama 70B model on Groq
             temperature=0.7,
             max_tokens=500
         )
@@ -132,7 +132,7 @@ def get_suggestions():
                 {"role": "system", "content": business_context},
                 {"role": "user", "content": prompt}
             ],
-            model="llama3-70b-8192",
+            model="llama-3.3-70b-versatile",  # Latest Llama 70B model on Groq
             temperature=0.8,
             max_tokens=400
         )

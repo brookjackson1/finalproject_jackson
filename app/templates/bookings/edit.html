@@ -36,7 +36,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="appt_time" class="form-label">Time <span class="text-danger">*</span></label>
                             <input type="time" class="form-control" id="appt_time" name="appt_time"
-                                   value="{{ appointment.appt_time.strftime('%H:%M') if appointment.appt_time else '' }}" required>
+                                   value="{% if appointment.appt_time %}{{ '%02d:%02d'|format(appointment.appt_time.seconds // 3600, (appointment.appt_time.seconds % 3600) // 60) }}{% endif %}" required>
                         </div>
                     </div>
 
