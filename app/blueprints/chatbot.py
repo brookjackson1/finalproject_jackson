@@ -9,24 +9,29 @@ client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
 
 def get_business_context():
     """Get context about NailsbyBrookJ services and offerings"""
-    cursor = g.db.cursor()
+    try:
+        cursor = g.db.cursor()
 
-    # Get services
-    cursor.execute("SELECT name, base_price, description FROM Services WHERE is_active = 1")
-    services = cursor.fetchall()
+        # Get services
+        cursor.execute("SELECT name, base_price, description FROM Services WHERE is_active = 1")
+        services = cursor.fetchall()
 
-    # Get popular tags
-    cursor.execute("""
-        SELECT t.name, t.category, COUNT(pt.photo_id) as usage_count
-        FROM Tags t
-        LEFT JOIN PhotoTags pt ON t.tag_id = pt.tag_id
-        GROUP BY t.tag_id
-        ORDER BY usage_count DESC
-        LIMIT 15
-    """)
-    tags = cursor.fetchall()
+        # Get popular tags
+        cursor.execute("""
+            SELECT t.name, t.category, COUNT(pt.photo_id) as usage_count
+            FROM Tags t
+            LEFT JOIN PhotoTags pt ON t.tag_id = pt.tag_id
+            GROUP BY t.tag_id
+            ORDER BY usage_count DESC
+            LIMIT 15
+        """)
+        tags = cursor.fetchall()
 
-    cursor.close()
+        cursor.close()
+    except Exception as e:
+        print(f"Database error in get_business_context: {e}")
+        services = []
+        tags = []
 
     # Build context string
     context = "You are a helpful AI assistant for NailsbyBrookJ, a professional nail salon. Here's information about our business:\n\n"

@@ -17,7 +17,9 @@
       "Bash(git remote add:*)",
       "Bash(git add:*)",
       "WebFetch(domain:gcsuedu-my.sharepoint.com)",
-      "WebFetch(domain:fullstackpython.org)"
+      "WebFetch(domain:fullstackpython.org)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nComplete NailsbyBrookJ business management system\n\nFeatures implemented:\n- Client management with loyalty points tracking\n- Appointment booking system with calendar view\n- Inventory management with low-stock alerts\n- Business analytics dashboard with Chart.js\n- Portfolio gallery with tag-based filtering\n- AI-powered chatbot using Groq API (LLaMA 3 70B)\n- Style suggestion system\n- Seasonal trend analysis\n- Beautiful pink/purple nail salon branding\n\nTech stack: Flask, MySQL, Bootstrap 5, Groq AI\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
