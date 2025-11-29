@@ -5,46 +5,101 @@
 <div class="text-center">
     <div class="card shadow-lg p-5 mb-5">
         <h1 class="display-4 mb-3">
-            <i class="fas fa-graduation-cap me-3"></i>Georgia College & State University
+            <i class="fas fa-spa me-3" style="color: var(--nail-pink);"></i>NailsbyBrookJ
         </h1>
-        <h2 class="h3 text-muted mb-4">MIS Flask Starter Kit</h2>
-        
-        <p class="lead mb-4">Welcome to GCSU's Flask development environment! This starter kit provides a foundation for building web applications using Python and Flask.</p>
-        
+        <h2 class="h3 mb-4" style="color: var(--nail-purple);">Professional Nail Artistry & Beauty Services</h2>
+
+        <p class="lead mb-4">Welcome to your ultimate nail care destination! Book appointments, explore stunning designs, and experience personalized nail artistry.</p>
+
         <div class="row justify-content-center mb-4">
             <div class="col-md-10">
-                <p class="mb-0">Georgia College & State University, located in Milledgeville, Georgia, is a public liberal arts university known for its commitment to undergraduate education and student success. Our MIS program prepares students with practical skills in software development, data analysis, and modern web technologies for business applications.</p>
+                <p class="mb-0">At NailsbyBrookJ, we believe that beautiful nails are an expression of your unique style. From classic elegance to bold statement designs, our professional services bring your vision to life with precision, creativity, and care.</p>
             </div>
         </div>
         
         <div class="row justify-content-center">
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <div class="card h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-code fa-3x mb-3" style="color: var(--gcsu-blue);"></i>
-                        <h5 class="card-title">Modern Development</h5>
-                        <p class="card-text">Built with Flask, Bootstrap, and modern web technologies for responsive design.</p>
+                        <i class="fas fa-calendar-check fa-3x mb-3" style="color: var(--nail-pink);"></i>
+                        <h5 class="card-title">Easy Booking</h5>
+                        <p class="card-text">Schedule your appointments online with real-time availability and instant confirmation.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-4 mb-3">
                 <div class="card h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-database fa-3x mb-3" style="color: var(--gcsu-green);"></i>
-                        <h5 class="card-title">Database Ready</h5>
-                        <p class="card-text">Pre-configured for MySQL/PostgreSQL with example CRUD operations.</p>
+                        <i class="fas fa-images fa-3x mb-3" style="color: var(--nail-purple);"></i>
+                        <h5 class="card-title">Style Gallery</h5>
+                        <p class="card-text">Browse our portfolio of stunning nail designs for inspiration and ideas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-star fa-3x mb-3" style="color: var(--nail-gold);"></i>
+                        <h5 class="card-title">Loyalty Rewards</h5>
+                        <p class="card-text">Earn points with every visit and unlock exclusive perks and discounts.</p>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="mt-4">
-            <a href="{{ url_for('examples.show_examples') }}" class="btn btn-primary btn-lg me-3">
-                <i class="fas fa-eye me-2"></i>View Examples
+            <a href="{{ url_for('bookings.book_appointment') }}" class="btn btn-primary btn-lg me-2 mb-2">
+                <i class="fas fa-calendar-plus me-2"></i>Book Now
             </a>
-            <a href="{{ url_for('about') }}" class="btn btn-outline-secondary btn-lg">
-                <i class="fas fa-info-circle me-2"></i>Learn More
+            <a href="{{ url_for('portfolio.gallery') }}" class="btn btn-outline-secondary btn-lg me-2 mb-2">
+                <i class="fas fa-images me-2"></i>View Portfolio
             </a>
+            <a href="{{ url_for('chatbot.index') }}" class="btn btn-outline-primary btn-lg mb-2">
+                <i class="fas fa-robot me-2"></i>AI Style Assistant
+            </a>
+        </div>
+
+        <!-- Services Overview -->
+        <div class="mt-5 pt-4">
+            <h3 class="mb-4">Our Services</h3>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card service-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-hand-sparkles fa-2x mb-2" style="color: var(--nail-pink);"></i>
+                            <h6>Classic Manicure</h6>
+                            <p class="text-muted small">$25</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card service-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-gem fa-2x mb-2" style="color: var(--nail-purple);"></i>
+                            <h6>Gel Manicure</h6>
+                            <p class="text-muted small">$40</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card service-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-star fa-2x mb-2" style="color: var(--nail-gold);"></i>
+                            <h6>Acrylic Full Set</h6>
+                            <p class="text-muted small">$55</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card service-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-paint-brush fa-2x mb-2" style="color: var(--nail-dark);"></i>
+                            <h6>Nail Art</h6>
+                            <p class="text-muted small">Starting at $10</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -54,18 +109,30 @@
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
     }
-    
+
     .btn-outline-secondary {
-        border-color: var(--gcsu-blue);
-        color: var(--gcsu-blue);
+        border-color: var(--nail-purple);
+        color: var(--nail-purple);
+        font-weight: 500;
     }
-    
+
     .btn-outline-secondary:hover {
-        background-color: var(--gcsu-blue);
-        border-color: var(--gcsu-blue);
+        background-color: var(--nail-purple);
+        border-color: var(--nail-purple);
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 51, 153, 0.3);
+        box-shadow: 0 4px 8px rgba(221, 160, 221, 0.4);
+    }
+
+    .service-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .service-card:hover {
+        border-color: var(--nail-pink);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(255, 105, 180, 0.3);
     }
 </style>
 

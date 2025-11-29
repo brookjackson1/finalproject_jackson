@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Low Stock Alerts</h1>
+        <p class="text-muted">Items that need to be restocked</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('inventory.list_inventory') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Inventory
+        </a>
+    </div>
+</div>
+
+<div class="card shadow border-warning">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0">
+            <i class="fas fa-bell me-2"></i>
+            {{ items|length }} Item{% if items|length != 1 %}s{% endif %} Below Threshold
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Priority</th>
+                        <th>Item Name</th>
+                        <th>Current Qty</th>
+                        <th>Threshold</th>
+                        <th>Unit</th>
+                        <th>Unit Cost</th>
+                        <th>Recommended Order</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr class="table-warning">
+                        <td>
+                            {% set stock_percent = (item.quantity / item.low_stock_threshold * 100) if item.low_stock_threshold > 0 else 100 %}
+                            {% if stock_percent < 25 %}
+                                <span class="badge bg-danger">URGENT</span>
+                            {% elif stock_percent < 50 %}
+                                <span class="badge bg-warning text-dark">High</span>
+                            {% else %}
+                                <span class="badge bg-info">Medium</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ item.name }}</strong>
+                            {% if item.category %}
+                                <br><small class="text-muted">{{ item.category }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong class="text-danger">{{ '%.2f'|format(item.quantity) }}</strong>
+                        </td>
+                        <td>{{ '%.2f'|format(item.low_stock_threshold) }}</td>
+                        <td>{{ item.unit }}</td>
+                        <td>${{ '%.2f'|format(item.unit_cost) }}</td>
+                        <td>
+                            {% set recommended = (item.low_stock_threshold * 2) - item.quantity %}
+                            <strong>{{ '%.0f'|format(recommended if recommended > 0 else item.low_stock_threshold) }}</strong> {{ item.unit }}
+                            <br>
+                            <small class="text-muted">
+                                Est. Cost: ${{ '%.2f'|format((recommended if recommended > 0 else item.low_stock_threshold) * item.unit_cost) }}
+                            </small>
+                            {% if item.supplier %}
+                            <br>
+                            <small class="text-muted">Supplier: {{ item.supplier }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('inventory.edit_item', item_id=item.item_id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i> Update
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="mt-4 p-3 bg-light rounded">
+            <h5>Restock Summary</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Total Items to Restock:</strong> {{ items|length }}</p>
+                    <p class="mb-1"><strong>Estimated Restock Cost:</strong>
+                        {% set total_cost = namespace(value=0) %}
+                        {% for item in items %}
+                            {% set recommended = (item.low_stock_threshold * 2) - item.quantity %}
+                            {% set total_cost.value = total_cost.value + ((recommended if recommended > 0 else item.low_stock_threshold) * item.unit_cost) %}
+                        {% endfor %}
+                        ${{ '%.2f'|format(total_cost.value) }}
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="text-muted small">Tip: Keep inventory levels at 2x your threshold for optimal stock management</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+            <h4>All Items Fully Stocked!</h4>
+            <p class="text-muted">No low stock alerts at this time</p>
+            <a href="{{ url_for('inventory.list_inventory') }}" class="btn btn-primary">
+                <i class="fas fa-boxes me-2"></i>View All Inventory
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

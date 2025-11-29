@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Chatbot Header -->
+        <div class="card shadow mb-4" style="background: linear-gradient(135deg, var(--nail-purple), var(--nail-pink)); color: white;">
+            <div class="card-body text-center py-4">
+                <h1 class="mb-2"><i class="fas fa-robot me-2"></i>AI Style Assistant</h1>
+                <p class="mb-0">Ask me about services, get style suggestions, or learn about nail care!</p>
+            </div>
+        </div>
+
+        <!-- Quick Suggestions -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-light">
+                <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Try asking me:</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="askQuestion('What nail services do you offer?')">
+                        <i class="fas fa-list me-1"></i>Available Services
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="askQuestion('Suggest a design for a wedding')">
+                        <i class="fas fa-ring me-1"></i>Wedding Designs
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="askQuestion('What are trendy summer nail colors?')">
+                        <i class="fas fa-sun me-1"></i>Summer Trends
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="askQuestion('How do I care for gel nails?')">
+                        <i class="fas fa-hand-sparkles me-1"></i>Nail Care Tips
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" onclick="askQuestion('What is the difference between gel and acrylic?')">
+                        <i class="fas fa-question-circle me-1"></i>Gel vs Acrylic
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="card shadow">
+            <div class="card-header" style="background: linear-gradient(90deg, var(--nail-purple), var(--nail-pink)); color: white;">
+                <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Chat with AI Assistant</h5>
+            </div>
+            <div class="card-body" id="chatWindow" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+                <!-- Welcome Message -->
+                <div class="message ai-message mb-3">
+                    <div class="d-flex align-items-start">
+                        <div class="avatar me-2">
+                            <i class="fas fa-robot fa-2x" style="color: var(--nail-purple);"></i>
+                        </div>
+                        <div class="message-bubble">
+                            <strong>AI Assistant</strong>
+                            <p class="mb-0">Hi! I'm your AI style assistant at NailsbyBrookJ. I can help you:</p>
+                            <ul class="mb-0 mt-2">
+                                <li>Choose the perfect nail service</li>
+                                <li>Get personalized design suggestions</li>
+                                <li>Learn about nail care and maintenance</li>
+                                <li>Find trendy styles for any occasion</li>
+                            </ul>
+                            <p class="mb-0 mt-2">What would you like to know?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="card-footer bg-white">
+                <form id="chatForm" class="d-flex gap-2">
+                    <input type="text" id="userMessage" class="form-control"
+                           placeholder="Ask me anything about nail services, styles, or care..."
+                           autocomplete="off" required>
+                    <button type="submit" class="btn btn-primary" id="sendBtn">
+                        <i class="fas fa-paper-plane me-1"></i>Send
+                    </button>
+                </form>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Powered by Groq AI for lightning-fast responses
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Style Suggestion Tool -->
+        <div class="card shadow mt-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-magic me-2"></i>AI Style Suggester</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Get personalized nail design suggestions based on your preferences:</p>
+                <form id="suggestionForm">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Occasion</label>
+                            <select class="form-select" id="occasion">
+                                <option value="">Any</option>
+                                <option value="Wedding">Wedding</option>
+                                <option value="Holiday">Holiday</option>
+                                <option value="Everyday">Everyday</option>
+                                <option value="Party">Party</option>
+                                <option value="Professional">Professional</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Season</label>
+                            <select class="form-select" id="season">
+                                <option value="">Any</option>
+                                <option value="Spring">Spring</option>
+                                <option value="Summer">Summer</option>
+                                <option value="Fall">Fall</option>
+                                <option value="Winter">Winter</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Color Preference</label>
+                            <select class="form-select" id="color">
+                                <option value="">Any</option>
+                                <option value="Pink">Pink</option>
+                                <option value="Red">Red</option>
+                                <option value="Nude">Nude</option>
+                                <option value="Black">Black</option>
+                                <option value="White">White</option>
+                                <option value="Pastel">Pastel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-wand-magic-sparkles me-2"></i>Get AI Suggestions
+                    </button>
+                </form>
+                <div id="suggestionResult" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .message-bubble {
+        background: white;
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        max-width: 80%;
+    }
+
+    .user-message {
+        justify-content: flex-end;
+    }
+
+    .user-message .message-bubble {
+        background: linear-gradient(135deg, var(--nail-purple), var(--nail-pink));
+        color: white;
+        margin-left: auto;
+    }
+
+    .ai-message .message-bubble {
+        background: white;
+        border: 2px solid var(--nail-lavender);
+    }
+
+    #chatWindow::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #chatWindow::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    #chatWindow::-webkit-scrollbar-thumb {
+        background: var(--nail-pink);
+        border-radius: 4px;
+    }
+
+    .avatar {
+        min-width: 40px;
+    }
+
+    .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 10px;
+    }
+
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: var(--nail-purple);
+        border-radius: 50%;
+        animation: typing 1.4s infinite;
+    }
+
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-10px); }
+    }
+</style>
+
+<script>
+    const chatWindow = document.getElementById('chatWindow');
+    const chatForm = document.getElementById('chatForm');
+    const userMessageInput = document.getElementById('userMessage');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Auto-scroll to bottom
+    function scrollToBottom() {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Add message to chat
+    function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'} mb-3`;
+
+        const content = `
+            <div class="d-flex align-items-start ${isUser ? 'flex-row-reverse' : ''}">
+                <div class="avatar ${isUser ? 'ms-2' : 'me-2'}">
+                    <i class="fas fa-${isUser ? 'user' : 'robot'} fa-2x" style="color: var(--nail-${isUser ? 'pink' : 'purple'});"></i>
+                </div>
+                <div class="message-bubble">
+                    <strong>${isUser ? 'You' : 'AI Assistant'}</strong>
+                    <p class="mb-0 mt-1" style="white-space: pre-wrap;">${message}</p>
+                </div>
+            </div>
+        `;
+
+        messageDiv.innerHTML = content;
+        chatWindow.appendChild(messageDiv);
+        scrollToBottom();
+    }
+
+    // Show typing indicator
+    function showTyping() {
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typingIndicator';
+        typingDiv.className = 'message ai-message mb-3';
+        typingDiv.innerHTML = `
+            <div class="d-flex align-items-start">
+                <div class="avatar me-2">
+                    <i class="fas fa-robot fa-2x" style="color: var(--nail-purple);"></i>
+                </div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        chatWindow.appendChild(typingDiv);
+        scrollToBottom();
+    }
+
+    function hideTyping() {
+        const typing = document.getElementById('typingIndicator');
+        if (typing) typing.remove();
+    }
+
+    // Handle chat form submission
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const message = userMessageInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        addMessage(message, true);
+        userMessageInput.value = '';
+
+        // Show typing indicator
+        showTyping();
+        sendBtn.disabled = true;
+
+        try {
+            const response = await fetch('{{ url_for("chatbot.ask") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            hideTyping();
+
+            if (data.success) {
+                addMessage(data.response, false);
+            } else {
+                addMessage('Sorry, I encountered an error. Please try again.', false);
+            }
+        } catch (error) {
+            hideTyping();
+            addMessage('Sorry, there was a connection error. Please try again.', false);
+        } finally {
+            sendBtn.disabled = false;
+            userMessageInput.focus();
+        }
+    });
+
+    // Quick question function
+    function askQuestion(question) {
+        userMessageInput.value = question;
+        chatForm.dispatchEvent(new Event('submit'));
+    }
+
+    // Style suggestion form
+    document.getElementById('suggestionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const occasion = document.getElementById('occasion').value;
+        const season = document.getElementById('season').value;
+        const color = document.getElementById('color').value;
+
+        const resultDiv = document.getElementById('suggestionResult');
+        resultDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Generating AI suggestions...</p></div>';
+
+        try {
+            const params = new URLSearchParams();
+            if (occasion) params.append('occasion', occasion);
+            if (season) params.append('season', season);
+            if (color) params.append('color', color);
+
+            const response = await fetch(`{{ url_for("chatbot.get_suggestions") }}?${params}`);
+            const data = await response.json();
+
+            if (data.success) {
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-sparkles me-2"></i>AI-Generated Suggestions:</h6>
+                        <div style="white-space: pre-wrap;">${data.suggestions}</div>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `<div class="alert alert-danger">Error: ${data.error}</div>`;
+            }
+        } catch (error) {
+            resultDiv.innerHTML = '<div class="alert alert-danger">Connection error. Please try again.</div>';
+        }
+    });
+</script>
+{% endblock %}

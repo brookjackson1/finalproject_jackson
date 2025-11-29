@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fas fa-calendar-alt me-2"></i>Appointment Calendar</h1>
+        <p class="text-muted">View and manage all bookings</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('bookings.book_appointment') }}" class="btn btn-primary">
+            <i class="fas fa-calendar-plus me-2"></i>Book Appointment
+        </a>
+    </div>
+</div>
+
+<!-- Month Navigation -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-outline-secondary" onclick="changeMonth(-1)">
+                <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <h4 class="mb-0" id="monthDisplay"></h4>
+            <button class="btn btn-outline-secondary" onclick="changeMonth(1)">
+                Next <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Appointments List -->
+<div class="card shadow">
+    <div class="card-body">
+        {% if appointments %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Client</th>
+                        <th>Service</th>
+                        <th>Duration</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr class="{% if appt.status == 'cancelled' %}table-secondary{% endif %}">
+                        <td>
+                            <strong>{{ appt.appt_date.strftime('%a, %b %d') if appt.appt_date else '-' }}</strong>
+                        </td>
+                        <td>{{ appt.appt_time.strftime('%I:%M %p') if appt.appt_time else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('clients.view_client', client_id=appt.client_id) }}" class="text-decoration-none">
+                                {{ appt.client_name }}
+                            </a>
+                        </td>
+                        <td>{{ appt.service_name }}</td>
+                        <td>{{ appt.avg_duration }} min</td>
+                        <td>${{ '%.2f'|format(appt.price) }}</td>
+                        <td>
+                            {% if appt.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif appt.status == 'scheduled' %}
+                                <span class="badge bg-primary">Scheduled</span>
+                            {% elif appt.status == 'confirmed' %}
+                                <span class="badge bg-info">Confirmed</span>
+                            {% elif appt.status == 'cancelled' %}
+                                <span class="badge bg-danger">Cancelled</span>
+                            {% elif appt.status == 'no-show' %}
+                                <span class="badge bg-warning">No-Show</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('bookings.view_appointment', appt_id=appt.appt_id) }}"
+                                   class="btn btn-outline-primary" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('bookings.edit_appointment', appt_id=appt.appt_id) }}"
+                                   class="btn btn-outline-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="mt-4 row">
+            <div class="col-md-3">
+                <div class="text-center p-3 bg-light rounded">
+                    <h5>{{ appointments|length }}</h5>
+                    <p class="text-muted mb-0">Total Appointments</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3 bg-light rounded">
+                    <h5>{{ appointments|selectattr('status', 'equalto', 'scheduled')|list|length + appointments|selectattr('status', 'equalto', 'confirmed')|list|length }}</h5>
+                    <p class="text-muted mb-0">Upcoming</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3 bg-light rounded">
+                    <h5>{{ appointments|selectattr('status', 'equalto', 'completed')|list|length }}</h5>
+                    <p class="text-muted mb-0">Completed</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center p-3 bg-light rounded">
+                    <h5>${{ '%.2f'|format(appointments|selectattr('status', 'equalto', 'completed')|map(attribute='price')|sum) }}</h5>
+                    <p class="text-muted mb-0">Revenue</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+            <h4>No Appointments This Month</h4>
+            <p class="text-muted">Start booking appointments for your clients!</p>
+            <a href="{{ url_for('bookings.book_appointment') }}" class="btn btn-primary">
+                <i class="fas fa-calendar-plus me-2"></i>Book First Appointment
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentMonth = '{{ current_month }}';
+
+    function updateMonthDisplay() {
+        const [year, month] = currentMonth.split('-');
+        const date = new Date(year, month - 1);
+        const monthName = date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        document.getElementById('monthDisplay').textContent = monthName;
+    }
+
+    function changeMonth(delta) {
+        const [year, month] = currentMonth.split('-').map(Number);
+        const date = new Date(year, month - 1 + delta, 1);
+        currentMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        window.location.href = `{{ url_for('bookings.calendar') }}?month=${currentMonth}`;
+    }
+
+    updateMonthDisplay();
+</script>
+{% endblock %}

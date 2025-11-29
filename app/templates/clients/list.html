@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fas fa-users me-2"></i>Client Management</h1>
+        <p class="text-muted">Manage your clients and track their appointment history</p>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('clients.add_client') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus me-2"></i>Add New Client
+        </a>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        {% if clients %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Instagram</th>
+                        <th>Email</th>
+                        <th>Total Visits</th>
+                        <th>Last Visit</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('clients.view_client', client_id=client.client_id) }}" class="text-decoration-none">
+                                <strong>{{ client.name }}</strong>
+                            </a>
+                        </td>
+                        <td>{{ client.phone }}</td>
+                        <td>
+                            {% if client.instagram %}
+                                <a href="https://instagram.com/{{ client.instagram.lstrip('@') }}" target="_blank" class="text-decoration-none">
+                                    <i class="fab fa-instagram me-1"></i>{{ client.instagram }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ client.email or '-' }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ client.appt_count }}</span>
+                        </td>
+                        <td>
+                            {% if client.last_visit %}
+                                {{ client.last_visit }}
+                            {% else %}
+                                <span class="text-muted">Never</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('clients.view_client', client_id=client.client_id) }}"
+                                   class="btn btn-outline-primary" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ url_for('clients.edit_client', client_id=client.client_id) }}"
+                                   class="btn btn-outline-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3">
+            <p class="text-muted">Total Clients: <strong>{{ clients|length }}</strong></p>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-users fa-4x text-muted mb-3"></i>
+            <h4>No Clients Yet</h4>
+            <p class="text-muted">Start by adding your first client!</p>
+            <a href="{{ url_for('clients.add_client') }}" class="btn btn-primary">
+                <i class="fas fa-user-plus me-2"></i>Add First Client
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

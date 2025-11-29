@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1><i class="fas fa-chart-line me-2"></i>Business Dashboard</h1>
+        <p class="text-muted">Analytics and insights for NailsbyBrookJ</p>
+    </div>
+</div>
+
+<!-- Key Metrics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card shadow text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-2x mb-2" style="color: var(--nail-gold);"></i>
+                <h3 class="mb-0">${{ '%.2f'|format(month_data.month_revenue or 0) }}</h3>
+                <p class="text-muted mb-0">This Month Revenue</p>
+                <small class="text-muted">{{ month_data.month_appts or 0 }} appointments</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card shadow text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-chart-line fa-2x mb-2" style="color: var(--nail-purple);"></i>
+                <h3 class="mb-0">${{ '%.2f'|format(month_data.month_profit or 0) }}</h3>
+                <p class="text-muted mb-0">This Month Profit</p>
+                <small class="text-muted">Total: ${{ '%.2f'|format(revenue_data.total_profit or 0) }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card shadow text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-users fa-2x mb-2" style="color: var(--nail-pink);"></i>
+                <h3 class="mb-0">{{ client_count }}</h3>
+                <p class="text-muted mb-0">Total Clients</p>
+                <small class="text-muted">{{ upcoming_count }} upcoming appts</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card shadow text-center h-100 {% if low_stock_count > 0 %}border-warning{% endif %}">
+            <div class="card-body">
+                <i class="fas fa-boxes fa-2x mb-2 {% if low_stock_count > 0 %}text-warning{% else %}text-success{% endif %}"></i>
+                <h3 class="mb-0 {% if low_stock_count > 0 %}text-warning{% endif %}">{{ low_stock_count }}</h3>
+                <p class="text-muted mb-0">Low Stock Items</p>
+                {% if low_stock_count > 0 %}
+                <a href="{{ url_for('inventory.low_stock') }}" class="btn btn-sm btn-warning mt-1">View</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Trend Chart -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow">
+            <div class="card-header" style="background: linear-gradient(90deg, var(--nail-purple), var(--nail-pink)); color: white;">
+                <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>Revenue Trend (Last 6 Months)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueTrendChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Services -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header" style="background: linear-gradient(90deg, var(--nail-purple), var(--nail-pink)); color: white;">
+                <h5 class="mb-0"><i class="fas fa-star me-2"></i>Top Services</h5>
+            </div>
+            <div class="card-body">
+                {% if top_services %}
+                <canvas id="topServicesChart"></canvas>
+                {% else %}
+                <p class="text-muted text-center">No data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Clients and Recent Activity -->
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Top Clients</h5>
+            </div>
+            <div class="card-body">
+                {% if top_clients %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Client</th>
+                                <th>Visits</th>
+                                <th>Total Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for client in top_clients %}
+                            <tr>
+                                <td><strong>{{ loop.index }}</strong></td>
+                                <td>{{ client.name }}</td>
+                                <td><span class="badge bg-info">{{ client.visits }}</span></td>
+                                <td><strong>${{ '%.2f'|format(client.total_spent) }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                {% if recent_activity %}
+                <div class="list-group list-group-flush">
+                    {% for appt in recent_activity %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ appt.client_name }}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    {{ appt.service_name }} - {{ appt.appt_date }}
+                                    <span class="badge bg-{{ 'success' if appt.status == 'completed' else 'primary' }}">
+                                        {{ appt.status }}
+                                    </span>
+                                </small>
+                            </div>
+                            <strong style="color: var(--nail-pink);">${{ '%.2f'|format(appt.price) }}</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center">No recent activity</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Links -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body text-center">
+                <h5 class="mb-3">Quick Actions</h5>
+                <a href="{{ url_for('bookings.book_appointment') }}" class="btn btn-primary me-2 mb-2">
+                    <i class="fas fa-calendar-plus me-1"></i>Book Appointment
+                </a>
+                <a href="{{ url_for('clients.add_client') }}" class="btn btn-primary me-2 mb-2">
+                    <i class="fas fa-user-plus me-1"></i>Add Client
+                </a>
+                <a href="{{ url_for('inventory.add_item') }}" class="btn btn-primary me-2 mb-2">
+                    <i class="fas fa-box me-1"></i>Add Inventory
+                </a>
+                <a href="{{ url_for('dashboard.revenue_analysis') }}" class="btn btn-outline-secondary me-2 mb-2">
+                    <i class="fas fa-chart-bar me-1"></i>Revenue Analysis
+                </a>
+                <a href="{{ url_for('dashboard.client_analytics') }}" class="btn btn-outline-secondary mb-2">
+                    <i class="fas fa-users me-1"></i>Client Analytics
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    // Revenue Trend Chart
+    const revenueTrendData = {{ revenue_trend|tojson }};
+    const months = revenueTrendData.map(d => d.month);
+    const revenues = revenueTrendData.map(d => parseFloat(d.revenue) || 0);
+    const profits = revenueTrendData.map(d => parseFloat(d.profit) || 0);
+
+    new Chart(document.getElementById('revenueTrendChart'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Revenue',
+                data: revenues,
+                borderColor: 'rgb(255, 105, 180)',
+                backgroundColor: 'rgba(255, 105, 180, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Profit',
+                data: profits,
+                borderColor: 'rgb(221, 160, 221)',
+                backgroundColor: 'rgba(221, 160, 221, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toFixed(0);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Top Services Chart
+    {% if top_services %}
+    const topServicesData = {{ top_services|tojson }};
+    const serviceNames = topServicesData.map(s => s.name);
+    const serviceBookings = topServicesData.map(s => s.bookings);
+
+    new Chart(document.getElementById('topServicesChart'), {
+        type: 'doughnut',
+        data: {
+            labels: serviceNames,
+            datasets: [{
+                data: serviceBookings,
+                backgroundColor: [
+                    'rgb(255, 105, 180)',
+                    'rgb(221, 160, 221)',
+                    'rgb(230, 230, 250)',
+                    'rgb(255, 182, 193)',
+                    'rgb(255, 215, 0)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}

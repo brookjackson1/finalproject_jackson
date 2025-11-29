@@ -1,62 +1,97 @@
-# Flask Starter Kit
+# NailsbyBrookJ - Professional Nail Business Management System
 
-This is a Flask starter kit with basic structure and tooling for web application development.
+A comprehensive business management and booking platform for independent nail businesses, built with Flask and MySQL.
 
-## Project Structure
-As your project grows, consider adding these organizational folders:
+## Project Overview
 
-### Recommended Additions
-- `docs/` - API documentation, setup guides, deployment notes
-- `docs/features/` - Feature specifications and requirements  
-- `docs/architecture/` - System design documents
-- `tests/` - Unit and integration tests
-- `migrations/` - Database schema changes (if using Flask-Migrate)
-- `config/` - Environment-specific configurations
-- `.github/workflows/` - CI/CD pipelines (if using GitHub)
-- `.vscode/` - Cursor/VS Code workspace settings
+NailsbyBrookJ is a full-featured web application designed to streamline nail salon operations, enhance client experience, and provide data-driven business insights. The platform combines appointment booking, client management, inventory tracking, and analytics in one elegant solution.
 
-### Documentation Files
-- `CHANGELOG.md` - Track version changes and updates
-- `.env.example` - Template for environment variables
+## Features Implemented
 
-**Note**: Only create these folders as your project actually needs them. Don't over-structure early.
+### 1. Client Management System
+- Add, view, edit, and delete client profiles
+- Track contact information, preferences, and allergies
+- View complete appointment history per client
+- Client statistics (total visits, lifetime value)
+- Integrated loyalty points tracking
 
-## AI Workflow Integration
-This folder includes prompts that should be copy/pasted into your docs/commands folder and then used by tagging them in the chat (e.g. @plan_feature.md) and providing additional context such as the description of your feature.
+### 2. Appointment Booking System
+- Interactive calendar view for all appointments
+- Real-time availability checking
+- Service selection with pricing
+- Status tracking (scheduled, confirmed, completed, cancelled, no-show)
+- Profitability tracking with product cost calculations
 
-Feel free to customize them to your needs! These are really just a starting point and what works for me.
+### 3. Inventory Management
+- Track supplies with quantity, unit, and cost
+- Automated low-stock alerts with priority levels
+- Category organization and supplier tracking
+- Quick inventory adjustments
+- Total inventory valuation
 
-[![The Perfect Cursor AI Workflow (3 Simple Steps)](https://img.youtube.com/vi/Jem2yqhXFaU/0.jpg)](https://youtu.be/Jem2yqhXFaU)
-> 🎥 The Perfect Cursor AI Workflow (3 Simple Steps)
+### 4. Business Analytics Dashboard
+- Revenue trends with Chart.js visualizations
+- Top services and top clients analysis
+- Monthly profitability tracking
+- Recent activity feed
+- Key performance indicators
 
-# Example Use
-## Create Brief
-Used for establishing the bigger picture context of what this project is about which can be helpful to plan new features.
-```
-@create_brief.md 
+### 5. Portfolio Gallery
+- Showcase completed nail designs
+- Tag-based filtering (22+ tags)
+- Search by style, color, season, occasion
+- Link photos to appointments
+- Trend analysis capabilities
 
-We are building an application to help dungeon masters plan their D&D campaigns and it's going to be called Dragonroll. It will include a variety of different tools, such as a random map generator and bc generator, loot generator and so on. We will use ai and allow the dungeon master to input certain prompts or use the tools directly.
-```
+### 6. Loyalty Rewards System
+- Automatic point accrual (1 point per $10)
+- Lifetime points tracking
+- Integration with client profiles
 
-## Plan Feature
-Used to create a technical plan for a new feature. Focuses on the technical requirements - NOT product manager context bloat or overly specific code details.
-```
-@plan_feature.md 
+### 7. AI-Powered Style Assistant (NEW!)
+- **Groq API integration** for lightning-fast AI responses
+- Natural conversation about services, pricing, and nail care
+- **Smart style suggestions** based on occasion, season, and color preferences
+- Context-aware responses using live business data
+- Quick suggestion buttons for common questions
+- Beautiful chat interface with typing indicators
 
-We want to add a new page that is going to be our NPC generator. To implement this, we are going to use the open ai api to generate the description of the npc as well as a name And we'll also generate an image for the npc using the open ai gpt-image-1 model.
-```
+## Technology Stack
 
-## Code Review
-Used to review the successful completion of a plan in a separate chat (and yes, it's this minimal)
-```
-@code_review.md
-@0001_PLAN.md
-```
+- **Backend**: Flask (Python)
+- **Database**: MySQL / JawsDB
+- **AI Integration**: Groq API (LLaMA 3 70B model)
+- **Frontend**: Bootstrap 5, Font Awesome, Chart.js
+- **Deployment**: Heroku-ready with gunicorn
 
-## Documentation Writing
-Used to create comprehensive documentation for the plan, review, and implementation.
-```
-@write_docs.md
-@0001_PLAN.md
-@0001_REVIEW.md
-```
+## Installation
+
+1. Clone the repository
+2. Create virtual environment: `python -m venv venv`
+3. Activate: `venv\Scripts\activate` (Windows) or `source venv/bin/activate` (Mac/Linux)
+4. Install dependencies: `pip install -r requirements.txt`
+5. Configure `.env` with database credentials and Groq API key:
+   ```
+   DB_HOST=your_host
+   DB_USER=your_user
+   DB_PASSWORD=your_password
+   DB_PORT=3306
+   DB_NAME=your_database
+   GROQ_API_KEY=your_groq_api_key
+   ```
+6. Initialize database: `python init_db.py`
+7. Run: `python app.py`
+
+## Database Schema
+
+9 interconnected tables:
+- Clients, Services, Appointments
+- Inventory, ServiceItems
+- PortfolioPhotos, Tags, PhotoTags
+- LoyaltyPoints
+
+## Author
+
+Brook Jackson
+Georgia College & State University
+MIS Program - Final Project

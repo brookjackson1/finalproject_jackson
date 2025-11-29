@@ -1,7 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>About</h1>
-<br>
-<p>This website is designed to display example data tables using Pandas and Flask operations. Users can perform basic CRUD operations to add, manipulate, and sort records. A calculation of average points per player will also be available.</p>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow-lg p-4">
+            <h1 class="mb-4"><i class="fas fa-info-circle me-2"></i>About NailsbyBrookJ</h1>
+
+            <div class="mb-4">
+                <h3>Our Story</h3>
+                <p>NailsbyBrookJ is a premier independent nail artistry business dedicated to bringing creativity, quality, and personalized care to every client. Founded on a passion for nail art and a commitment to excellence, we transform nails into beautiful expressions of individual style.</p>
+            </div>
+
+            <div class="mb-4">
+                <h3>What We Offer</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: var(--nail-pink);"></i> Professional nail services including manicures, pedicures, and nail art</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: var(--nail-pink);"></i> Custom nail designs tailored to your preferences</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: var(--nail-pink);"></i> Gel, acrylic, and natural nail care options</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: var(--nail-pink);"></i> Safe, high-quality products and hygiene practices</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2" style="color: var(--nail-pink);"></i> Loyalty rewards program for our valued clients</li>
+                </ul>
+            </div>
+
+            <div class="mb-4">
+                <h3>Business Management Platform</h3>
+                <p>This platform serves as a comprehensive business management system featuring:</p>
+                <ul>
+                    <li>Online booking and appointment scheduling</li>
+                    <li>Client profile management with preferences and history</li>
+                    <li>Inventory tracking with automated low-stock alerts</li>
+                    <li>Business analytics and profitability insights</li>
+                    <li>Portfolio gallery showcasing completed nail designs</li>
+                    <li>AI-powered style suggestions based on trends and preferences</li>
+                    <li>Seasonal trend analysis for data-driven decisions</li>
+                </ul>
+            </div>
+
+            <div class="alert" style="background: linear-gradient(45deg, var(--nail-lavender), var(--nail-rose)); border: none;">
+                <h4 class="mb-3"><i class="fas fa-heart me-2"></i>Our Philosophy</h4>
+                <p class="mb-0">We believe that every client deserves personalized attention and stunning results. Whether you're looking for an everyday elegant look or a bold statement design for a special occasion, we're here to bring your nail art vision to life.</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

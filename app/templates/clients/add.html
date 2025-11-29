@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-body">
+                <h1 class="mb-4"><i class="fas fa-user-plus me-2"></i>Add New Client</h1>
+
+                <form method="POST" action="{{ url_for('clients.add_client') }}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required
+                                   placeholder="(555) 123-4567">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                   placeholder="client@example.com">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram" class="form-label">Instagram Handle</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control" id="instagram" name="instagram"
+                                       placeholder="username">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="allergies" class="form-label">
+                            <i class="fas fa-exclamation-triangle me-1 text-warning"></i>Allergies / Sensitivities
+                        </label>
+                        <textarea class="form-control" id="allergies" name="allergies" rows="2"
+                                  placeholder="Any known allergies to products or ingredients..."></textarea>
+                        <small class="form-text text-muted">Important for product selection and safety</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">
+                            <i class="fas fa-sticky-note me-1"></i>Notes / Preferences
+                        </label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"
+                                  placeholder="Preferred styles, nail preferences, special requests..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('clients.list_clients') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Add Client
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

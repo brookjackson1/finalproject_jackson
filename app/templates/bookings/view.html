@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <a href="{{ url_for('bookings.calendar') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Calendar
+        </a>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('bookings.edit_appointment', appt_id=appointment.appt_id) }}" class="btn btn-primary">
+            <i class="fas fa-edit me-2"></i>Edit Appointment
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card shadow">
+            <div class="card-header" style="background: linear-gradient(90deg, var(--nail-purple), var(--nail-pink)); color: white;">
+                <h3 class="mb-0">
+                    <i class="fas fa-calendar-check me-2"></i>Appointment Details
+                </h3>
+            </div>
+            <div class="card-body">
+                <!-- Status Badge -->
+                <div class="text-center mb-4">
+                    {% if appointment.status == 'completed' %}
+                        <span class="badge bg-success p-3 fs-5">Completed</span>
+                    {% elif appointment.status == 'scheduled' %}
+                        <span class="badge bg-primary p-3 fs-5">Scheduled</span>
+                    {% elif appointment.status == 'confirmed' %}
+                        <span class="badge bg-info p-3 fs-5">Confirmed</span>
+                    {% elif appointment.status == 'cancelled' %}
+                        <span class="badge bg-danger p-3 fs-5">Cancelled</span>
+                    {% elif appointment.status == 'no-show' %}
+                        <span class="badge bg-warning p-3 fs-5">No-Show</span>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <!-- Appointment Information -->
+                    <div class="col-md-6 mb-3">
+                        <h5 class="border-bottom pb-2"><i class="fas fa-info-circle me-2"></i>Appointment Info</h5>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-calendar me-2 text-muted"></i>Date:</strong>
+                            <p class="mb-0">{{ appointment.appt_date.strftime('%A, %B %d, %Y') if appointment.appt_date else '-' }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-clock me-2 text-muted"></i>Time:</strong>
+                            <p class="mb-0">{{ appointment.appt_time.strftime('%I:%M %p') if appointment.appt_time else '-' }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-spa me-2 text-muted"></i>Service:</strong>
+                            <p class="mb-0">{{ appointment.service_name }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-hourglass-half me-2 text-muted"></i>Duration:</strong>
+                            <p class="mb-0">{{ appointment.avg_duration }} minutes</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-dollar-sign me-2 text-muted"></i>Price:</strong>
+                            <p class="mb-0 fs-4" style="color: var(--nail-pink);">${{ '%.2f'|format(appointment.price) }}</p>
+                        </div>
+
+                        {% if appointment.product_cost %}
+                        <div class="mb-3">
+                            <strong><i class="fas fa-box me-2 text-muted"></i>Product Cost:</strong>
+                            <p class="mb-0">${{ '%.2f'|format(appointment.product_cost) }}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-chart-line me-2 text-muted"></i>Profit:</strong>
+                            <p class="mb-0 fs-5" style="color: var(--nail-purple);">${{ '%.2f'|format(appointment.profit) }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Client Information -->
+                    <div class="col-md-6 mb-3">
+                        <h5 class="border-bottom pb-2"><i class="fas fa-user me-2"></i>Client Info</h5>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user-circle me-2 text-muted"></i>Name:</strong>
+                            <p class="mb-0">
+                                <a href="{{ url_for('clients.view_client', client_id=appointment.client_id) }}">
+                                    {{ appointment.client_name }}
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="fas fa-phone me-2 text-muted"></i>Phone:</strong>
+                            <p class="mb-0">{{ appointment.phone }}</p>
+                        </div>
+
+                        {% if appointment.email %}
+                        <div class="mb-3">
+                            <strong><i class="fas fa-envelope me-2 text-muted"></i>Email:</strong>
+                            <p class="mb-0">{{ appointment.email }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if appointment.allergies %}
+                        <div class="alert alert-warning">
+                            <strong><i class="fas fa-exclamation-triangle me-2"></i>Allergies:</strong>
+                            <p class="mb-0">{{ appointment.allergies }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                {% if appointment.notes %}
+                <div class="mt-3">
+                    <h5 class="border-bottom pb-2"><i class="fas fa-sticky-note me-2"></i>Notes</h5>
+                    <p class="mb-0">{{ appointment.notes }}</p>
+                </div>
+                {% endif %}
+
+                <!-- Actions -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex justify-content-between">
+                        {% if appointment.status not in ['cancelled', 'completed'] %}
+                        <form method="POST" action="{{ url_for('bookings.cancel_appointment', appt_id=appointment.appt_id) }}"
+                              onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times me-2"></i>Cancel Appointment
+                            </button>
+                        </form>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+
+                        <a href="{{ url_for('bookings.edit_appointment', appt_id=appointment.appt_id) }}" class="btn btn-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
