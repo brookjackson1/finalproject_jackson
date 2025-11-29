@@ -23,7 +23,8 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nAdd sample data and fix AI chatbot error handling\n\n- Created sample_data.sql with 10 clients, 20 appointments, 8 portfolio photos\n- Added load_sample_data.py script for easy data population\n- Fixed chatbot error handling for empty database\n- All pages now have realistic demo data\n- Portfolio includes professional nail design images from Unsplash\n\n🤖 Generated with Claude Code\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(timeout:*)",
       "WebFetch(domain:console.groq.com)",
-      "Bash(del test_chatbot.py)"
+      "Bash(del test_chatbot.py)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
