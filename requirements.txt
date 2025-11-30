@@ -1,6 +1,7 @@
 blinker==1.9.0
 click==8.2.1
 colorama==0.4.6
+cryptography==44.0.0
 Flask==3.1.0
 groq==0.13.0
 gunicorn==23.0.0
