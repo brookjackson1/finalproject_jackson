@@ -24,7 +24,8 @@
       "Bash(timeout:*)",
       "WebFetch(domain:console.groq.com)",
       "Bash(del test_chatbot.py)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:www.instagram.com)"
     ],
     "deny": [],
     "ask": []
