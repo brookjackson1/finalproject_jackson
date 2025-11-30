@@ -32,9 +32,12 @@ from . import routes
 
 @app.before_request
 def before_request():
+    from flask import abort
     g.db = get_db()
     if g.db is None:
         logger.error("Database connection failed in before_request")
+        logger.error("Check if JAWSDB_URL environment variable is set correctly")
+        abort(500, description="Database connection failed. Please check server configuration.")
 
 # Setup database connection teardown
 @app.teardown_appcontext
