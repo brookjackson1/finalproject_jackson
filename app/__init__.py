@@ -1,9 +1,15 @@
-from flask import Flask, g
+from flask import Flask, g, render_template
 from .app_factory import create_app
 from .db_connect import close_db, get_db
+import logging
+import sys
 
 app = create_app()
 app.secret_key = 'your-secret'  # Replace with an environment
+
+# Configure logging for Heroku
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Register Blueprints
 from app.blueprints.examples import examples
@@ -28,9 +34,33 @@ from . import routes
 def before_request():
     g.db = get_db()
     if g.db is None:
-        print("Warning: Database connection unavailable. Some features may not work.")
+        logger.error("Database connection failed in before_request")
 
 # Setup database connection teardown
 @app.teardown_appcontext
 def teardown_db(exception=None):
     close_db(exception)
+
+# Error handlers
+@app.errorhandler(500)
+def internal_error(error):
+    logger.error(f"Internal Server Error: {error}")
+    return render_template('error.html',
+                         error_code=500,
+                         error_message="Internal Server Error",
+                         error_detail="Something went wrong. Please try again later."), 500
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html',
+                         error_code=404,
+                         error_message="Page Not Found",
+                         error_detail="The page you're looking for doesn't exist."), 404
+
+@app.errorhandler(Exception)
+def handle_exception(error):
+    logger.error(f"Unhandled exception: {error}", exc_info=True)
+    return render_template('error.html',
+                         error_code=500,
+                         error_message="Unexpected Error",
+                         error_detail=str(error)), 500

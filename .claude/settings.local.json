@@ -25,7 +25,8 @@
       "WebFetch(domain:console.groq.com)",
       "Bash(del test_chatbot.py)",
       "Bash(git commit:*)",
-      "WebFetch(domain:www.instagram.com)"
+      "WebFetch(domain:www.instagram.com)",
+      "Bash(heroku apps:*)"
     ],
     "deny": [],
     "ask": []
