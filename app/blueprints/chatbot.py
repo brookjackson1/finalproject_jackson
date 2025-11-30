@@ -4,8 +4,12 @@ import os
 
 chatbot = Blueprint('chatbot', __name__)
 
-# Initialize Groq client
-client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+def get_groq_client():
+    """Get Groq client instance"""
+    api_key = os.environ.get('GROQ_API_KEY')
+    if not api_key:
+        raise ValueError("GROQ_API_KEY environment variable is not set")
+    return Groq(api_key=api_key)
 
 def get_business_context():
     """Get context about NailsbyBrookJ services and offerings"""
@@ -77,6 +81,9 @@ def ask():
         # Get business context
         business_context = get_business_context()
 
+        # Get Groq client
+        client = get_groq_client()
+
         # Create chat completion with context
         chat_completion = client.chat.completions.create(
             messages=[
@@ -126,6 +133,9 @@ def get_suggestions():
             prompt += f"Color preference: {color_pref}\n"
 
         prompt += "\nProvide creative, detailed suggestions with design elements."
+
+        # Get Groq client
+        client = get_groq_client()
 
         chat_completion = client.chat.completions.create(
             messages=[
