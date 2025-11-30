@@ -3,6 +3,7 @@ import pymysql.cursors
 from flask import g
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -10,14 +11,32 @@ def get_db():
     if 'db' not in g or not is_connection_open(g.db):
         print("Re-establishing closed database connection.")
         try:
-            g.db = pymysql.connect(
-                # Database configuration from environment variables
-                host=os.getenv('DB_HOST'),
-                user=os.getenv('DB_USER'),
-                password=os.getenv('DB_PASSWORD'),
-                database=os.getenv('DB_NAME'),
-                cursorclass=pymysql.cursors.DictCursor  # Set the default cursor class to DictCursor
-            )
+            # Check if JAWSDB_URL exists (Heroku deployment)
+            jawsdb_url = os.getenv('JAWSDB_URL')
+
+            if jawsdb_url:
+                # Parse JawsDB URL format: mysql://username:password@hostname:port/database
+                print("Using JawsDB connection")
+                url = urlparse(jawsdb_url)
+                g.db = pymysql.connect(
+                    host=url.hostname,
+                    user=url.username,
+                    password=url.password,
+                    database=url.path[1:],  # Remove leading '/'
+                    port=url.port or 3306,
+                    cursorclass=pymysql.cursors.DictCursor
+                )
+            else:
+                # Use individual environment variables (local development)
+                print("Using local database connection")
+                g.db = pymysql.connect(
+                    host=os.getenv('DB_HOST'),
+                    user=os.getenv('DB_USER'),
+                    password=os.getenv('DB_PASSWORD'),
+                    database=os.getenv('DB_NAME'),
+                    port=int(os.getenv('DB_PORT', 3306)),
+                    cursorclass=pymysql.cursors.DictCursor
+                )
         except Exception as e:
             print(f"Database connection failed: {e}")
             g.db = None
