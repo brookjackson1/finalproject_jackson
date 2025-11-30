@@ -1,103 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col">
-        <h1><i class="fas fa-images me-2"></i>Portfolio Gallery</h1>
-        <p class="text-muted">Showcase of beautiful nail designs</p>
-    </div>
-    <div class="col-auto">
-        <a href="{{ url_for('portfolio.add_photo') }}" class="btn btn-primary">
-            <i class="fas fa-plus me-2"></i>Add Photo
-        </a>
-    </div>
-</div>
-
-<!-- Tag Filter -->
-<div class="card shadow mb-4">
-    <div class="card-body">
-        <h6 class="mb-3">Filter by Style:</h6>
-        <div class="btn-group-wrap">
-            <a href="{{ url_for('portfolio.gallery') }}"
-               class="btn btn-sm {% if not current_tag %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2 mb-2">
-                All Designs
-            </a>
-            {% for tag in all_tags %}
-            <a href="{{ url_for('portfolio.gallery', tag=tag.name) }}"
-               class="btn btn-sm {% if current_tag == tag.name %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2 mb-2">
-                {{ tag.name }}
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<!-- Gallery Grid -->
-<div class="row">
-    {% if photos %}
-        {% for photo in photos %}
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card shadow h-100 portfolio-card">
-                <div class="position-relative">
-                    <img src="{{ photo.image_url }}" class="card-img-top" alt="{{ photo.title or 'Nail design' }}"
-                         style="height: 300px; object-fit: cover;">
-                    <div class="position-absolute top-0 end-0 p-2">
-                        {% if photo.tags %}
-                            {% for tag_name in photo.tags.split(', ')[:2] %}
-                            <span class="badge" style="background: rgba(255, 105, 180, 0.9);">{{ tag_name }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ photo.title or 'Untitled Design' }}</h5>
-                    {% if photo.description %}
-                    <p class="card-text text-muted small">{{ photo.description[:100] }}{% if photo.description|length > 100 %}...{% endif %}</p>
-                    {% endif %}
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">
-                            <i class="fas fa-calendar me-1"></i>
-                            {{ photo.created_at.strftime('%b %d, %Y') }}
-                        </small>
-                        <a href="{{ url_for('portfolio.view_photo', photo_id=photo.photo_id) }}" class="btn btn-sm btn-primary">
-                            View Details
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    {% else %}
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-images fa-4x text-muted mb-3"></i>
-                    <h4>No Photos Yet</h4>
-                    <p class="text-muted">Start building your portfolio by adding your first design!</p>
-                    <a href="{{ url_for('portfolio.add_photo') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>Add First Photo
-                    </a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+<div class="text-center mb-5">
+    <h1><i class="fas fa-images me-2"></i>Portfolio Gallery</h1>
+    <p class="text-muted lead">Latest nail designs from @nailsbybrookj</p>
 </div>
 
 <!-- Instagram Feed Section -->
-<div class="mt-5 mb-4">
-    <div class="card shadow mb-4">
-        <div class="card-body text-center" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-            <i class="fab fa-instagram fa-3x mb-3"></i>
-            <h2 class="mb-2">Latest Nail Designs from Instagram</h2>
-            <p class="lead mb-3">See my most recent work on Instagram @nailsbybrookj</p>
-        </div>
-    </div>
-
+<div class="mb-4">
     <!-- Instagram Embed Grid -->
     <div class="row">
-        <div class="col-12 text-center mb-4">
-            <p class="text-muted">Check out these recent designs from my Instagram:</p>
-        </div>
 
         <!-- Instagram Post 1 -->
         <div class="col-md-4 mb-4">
