@@ -17,7 +17,7 @@
 <div class="row">
     <div class="col-lg-8 mx-auto">
         <div class="card shadow">
-            <div class="card-header" style="background: linear-gradient(90deg, var(--nail-purple), var(--nail-pink)); color: white;">
+            <div class="card-header" style="background: var(--accent-color); color: white;">
                 <h3 class="mb-0">
                     <i class="fas fa-calendar-check me-2"></i>Appointment Details
                 </h3>
@@ -73,7 +73,7 @@
 
                         <div class="mb-3">
                             <strong><i class="fas fa-dollar-sign me-2 text-muted"></i>Price:</strong>
-                            <p class="mb-0 fs-4" style="color: var(--nail-pink);">${{ '%.2f'|format(appointment.price) }}</p>
+                            <p class="mb-0 fs-4" style="color: var(--accent-color);">${{ '%.2f'|format(appointment.price) }}</p>
                         </div>
 
                         {% if appointment.product_cost %}
@@ -84,7 +84,7 @@
 
                         <div class="mb-3">
                             <strong><i class="fas fa-chart-line me-2 text-muted"></i>Profit:</strong>
-                            <p class="mb-0 fs-5" style="color: var(--nail-purple);">${{ '%.2f'|format(appointment.profit) }}</p>
+                            <p class="mb-0 fs-5" style="color: var(--primary-dark);">${{ '%.2f'|format(appointment.profit) }}</p>
                         </div>
                         {% endif %}
                     </div>
@@ -133,21 +133,31 @@
 
                 <!-- Actions -->
                 <div class="mt-4 pt-3 border-top">
-                    <div class="d-flex justify-content-between">
-                        {% if appointment.status not in ['cancelled', 'completed'] %}
-                        <form method="POST" action="{{ url_for('bookings.cancel_appointment', appt_id=appointment.appt_id) }}"
-                              onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-times me-2"></i>Cancel Appointment
-                            </button>
-                        </form>
-                        {% else %}
-                        <div></div>
-                        {% endif %}
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <div>
+                            {% if appointment.status not in ['cancelled', 'completed'] %}
+                            <form method="POST" action="{{ url_for('bookings.cancel_appointment', appt_id=appointment.appt_id) }}"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-ban me-2"></i>Cancel Appointment
+                                </button>
+                            </form>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('bookings.delete_appointment', appt_id=appointment.appt_id) }}"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Permanently delete this appointment? This cannot be undone.');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash me-2"></i>Delete
+                                </button>
+                            </form>
+                        </div>
 
+                        {% if appointment.status not in ['cancelled', 'completed'] %}
                         <a href="{{ url_for('bookings.edit_appointment', appt_id=appointment.appt_id) }}" class="btn btn-primary">
-                            <i class="fas fa-edit me-2"></i>Edit Details
+                            <i class="fas fa-calendar-alt me-2"></i>Reschedule
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

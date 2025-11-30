@@ -227,6 +227,28 @@ def cancel_appointment(appt_id):
 
     return redirect(url_for('bookings.calendar'))
 
+@bookings.route('/<int:appt_id>/delete', methods=['POST'])
+def delete_appointment(appt_id):
+    """Permanently delete an appointment"""
+    cursor = g.db.cursor()
+
+    try:
+        cursor.execute("""
+            DELETE FROM Appointments
+            WHERE appt_id = %s
+        """, (appt_id,))
+        g.db.commit()
+        flash('Appointment deleted successfully!', 'success')
+
+    except Exception as e:
+        g.db.rollback()
+        flash(f'Error deleting appointment: {str(e)}', 'error')
+
+    finally:
+        cursor.close()
+
+    return redirect(url_for('bookings.calendar'))
+
 @bookings.route('/available-times')
 def available_times():
     """API endpoint to get available time slots for a date"""
